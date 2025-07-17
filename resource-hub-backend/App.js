@@ -5,6 +5,8 @@ const cors = require('cors')
 
 const NoteModel = require('./models/Notes')
 const UserModel = require('./models/User');
+const DepartmentModel = require('./models/Department');
+
 
 const app = express()
 
@@ -97,6 +99,15 @@ app.get('/viewnotes', (req, res) => {
             res.json({ status: 'error', message: 'Error during registration' })
         })
 })
+
+
+app.get('/departments', (req, res) => {
+    DepartmentModel.find()
+        .then(data => res.json(data))
+        .catch(err => res.status(500).json({ error: 'Failed to fetch departments' }));
+})
+
+
 
 app.listen(4000, () => {
     console.log('Server running on port 4000')
