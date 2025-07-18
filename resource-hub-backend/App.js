@@ -137,6 +137,19 @@ app.get('/subjects/:dept/:sem', (req, res) => {
 });
 
 
+app.get('/subjects', (req, res) => {
+  const { departmentCode, semester } = req.query;
+
+  if (!departmentCode || !semester) {
+    return res.status(400).json({ error: 'Missing departmentCode or semester' });
+  }
+
+  SubjectModel.find({ departmentCode, semester })
+    .then(subjects => res.json(subjects))
+    .catch(err => res.status(500).json({ error: 'Failed to fetch subjects' }));
+});
+
+
 app.post('/upload', upload.single('file'), (req, res) => {
     const { title, subjectName, semester, departmentCode, uploadedBy } = req.body;
 
