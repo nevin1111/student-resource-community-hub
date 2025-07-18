@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import NavBar from './Navbar';
 
 const Home = () => {
   const [departments, setDepartments] = useState([]);
@@ -17,6 +18,8 @@ const Home = () => {
   };
 
   return (
+    <div>
+        <NavBar/>
     <div className="container mt-4">
       <h2 className="text-center mb-4">Select Department</h2>
       <div className="row justify-content-center">
@@ -41,6 +44,7 @@ const Home = () => {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 };

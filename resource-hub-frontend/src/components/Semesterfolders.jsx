@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import NavBar from './Navbar';
 
 const SemesterFolders = () => {
   const location = useLocation();
@@ -32,12 +33,17 @@ const SemesterFolders = () => {
     }
   }, [location.state]);
 
-  const handleClick = (semester) => {
-    const formatted = semester.toLowerCase().replace(/\s/g, '');
-    navigate(`/subjects/${formatted}`, { state: { code: departmentCode, semester } });
-  };
+  const handleClick = (semesterLabel) => {
+  const semesterNumber = semesterLabel.split(' ')[1]; // "Semester 1" → "1"
+  navigate(`/subjects/${semesterNumber}`, {
+    state: { code: departmentCode, semester: semesterNumber }
+  });
+};
+
 
   return (
+    <div>
+        <NavBar/>
     <div className="container mt-4">
       <h2 className="text-center mb-4">Select Semester</h2>
       <div className="row justify-content-center">
@@ -62,6 +68,7 @@ const SemesterFolders = () => {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 };

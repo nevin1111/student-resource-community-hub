@@ -6,13 +6,28 @@ const cors = require('cors')
 const NoteModel = require('./models/Notes')
 const UserModel = require('./models/User');
 const DepartmentModel = require('./models/Department');
-
+const SubjectModel = require('./models/Subject');
+const multer = require('multer');
+const path = require('path');
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+// File upload setup
+const storage = multer.diskStorage({
+    destination: './uploads/', // folder where files will be stored
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ storage });
+// Serve uploaded files statically
+app.use('/uploads', express.static('uploads'));
+
 
 mongoose.connect('mongodb+srv://nevin1111:internalmarkmongo@cluster0.ltgqnuy.mongodb.net/communityHub?retryWrites=true&w=majority&appName=Cluster0')
 
@@ -92,13 +107,18 @@ app.post('/addnote', (req, res) => {
 
 
 app.get('/viewnotes', (req, res) => {
-    NoteModel.find().then(
-        (items) => {
-            res.json(items)
-        }).catch(() => {
-            res.json({ status: 'error', message: 'Error during registration' })
-        })
-})
+  const { departmentCode, semester, subjectName } = req.query;
+
+  const filter = {};
+  if (departmentCode) filter.departmentCode = departmentCode;
+  if (semester) filter.semester = semester;
+  if (subjectName) filter.subjectName = subjectName;
+
+  NoteModel.find(filter)
+    .then(notes => res.json(notes))
+    .catch(err => res.status(500).json({ error: 'Server error' }));
+});
+
 
 
 app.get('/departments', (req, res) => {
@@ -106,6 +126,47 @@ app.get('/departments', (req, res) => {
         .then(data => res.json(data))
         .catch(err => res.status(500).json({ error: 'Failed to fetch departments' }));
 })
+
+
+
+app.get('/subjects/:dept/:sem', (req, res) => {
+    const { dept, sem } = req.params;
+    SubjectModel.find({ departmentCode: dept, semester: sem })
+        .then(subjects => res.json(subjects))
+        .catch(() => res.status(500).json({ status: 'error', message: 'Failed to fetch subjects' }));
+});
+
+
+app.post('/upload', upload.single('file'), (req, res) => {
+    const { title, subjectName, semester, departmentCode, uploadedBy } = req.body;
+
+    if (!req.file || !title || !subjectName || !semester || !departmentCode || !uploadedBy) {
+        return res.status(400).json({ status: 'fail', message: 'Missing required fields or file' });
+    }
+
+    const newNote = new NoteModel({
+        title,
+        subjectName,
+        semester,
+        departmentCode,
+        uploadedBy,
+        fileUrl: `/uploads/${req.file.filename}`
+    });
+
+    newNote.save()
+        .then(() => {
+            res.json({
+                status: 'success',
+                message: 'Note uploaded successfully'
+            });
+        })
+        .catch((err) => {
+            console.error('Error saving note:', err);
+            res.status(500).json({ status: 'error', message: 'Failed to save note' });
+        });
+});
+
+
 
 
 

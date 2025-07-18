@@ -1,61 +1,55 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import NavBar from './Navbar';
 
 const SubjectList = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [subjects, setSubjects] = useState([]);
 
-  const { code: departmentCode, semester } = location.state || {};
+  const departmentCode = location.state?.code;
+  const semester = location.state?.semester;
 
-  // You can fetch from backend later. For now, example static subjects
-  const subjects = [
-    'Mathematics',
-    'Data Structures',
-    'Computer Networks',
-    'Operating Systems',
-    'Database Management Systems'
-  ];
+  useEffect(() => {
+    if (departmentCode && semester) {
+      axios.get(`http://localhost:4000/subjects/${departmentCode}/${semester}`)
+        .then(res => setSubjects(res.data))
+        .catch(err => console.error('Error fetching subjects:', err));
+    }
+  }, [departmentCode, semester]);
 
-  const handleSubjectClick = (subjectName) => {
-    navigate('/notes', {
+  const handleClick = (subjectName) => {
+    navigate(`/notes`, {
       state: {
-        department: departmentCode,
-        semester: semester,
-        subject: subjectName
+        departmentCode,
+        semester,
+        subjectName,
       }
     });
   };
 
-  if (!departmentCode || !semester) {
-    return <h5 className="text-center text-danger mt-4">Invalid access — missing department or semester info</h5>;
-  }
-
   return (
+    <div>
+        <NavBar/>
     <div className="container mt-4">
-      <h2 className="text-center mb-4">
-        Subjects - {departmentCode}, Semester {semester}
-      </h2>
+      <h2 className="text-center mb-4">Select Subject</h2>
       <div className="row justify-content-center">
-        {subjects.map((subject, index) => (
+        {subjects.map((sub, index) => (
           <div
             key={index}
-            className="card text-bg-warning m-3"
-            style={{
-              maxWidth: '18rem',
-              cursor: 'pointer',
-              transition: 'transform 0.2s',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
-            }}
-            onClick={() => handleSubjectClick(subject)}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+            className="card text-bg-success m-3"
+            style={{ maxWidth: '18rem', cursor: 'pointer' }}
+            onClick={() => handleClick(sub.subjectName)}
           >
             <div className="card-body text-center">
-              <h5 className="card-title">{subject}</h5>
+              <h5 className="card-title">{sub.subjectName}</h5>
+              <p className="card-text">View & upload notes</p>
             </div>
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 };

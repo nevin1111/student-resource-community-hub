@@ -1,22 +1,43 @@
 const mongoose = require('mongoose');
 
 const NoteSchema = new mongoose.Schema({
-    title: String,
-    subject: String,
-    semester: String,
-    department: String,
-    noteURL: String,
-    uploadedBy: String,
-    date: {
-        type: Date,
-        default: Date.now
-    },
-    upvotes: {
-        type: Number,
-        default: 0
-    }
+  title: {
+    type: String,
+    required: true
+  },
+  subjectName: {
+    type: String,
+    required: true
+  },
+  semester: {
+    type: String,
+    required: true
+  },
+  departmentCode: {
+    type: String,
+    required: true
+  },
+  uploadedBy: {
+    type: String,
+    required: true
+  },
+  uploadDate: {
+    type: Date,
+    default: Date.now
+  },
+  fileUrl: {
+    type: String,
+    required: true // file must be uploaded
+  },
+  upvotes: {
+    type: Number,
+    default: 0
+  },
+  downloadCount: {
+    type: Number,
+    default: 0
+  }
 });
 
-const NoteModel = mongoose.model('notes', NoteSchema);
-module.exports = NoteModel
-
+const NoteModel = mongoose.model('Note', NoteSchema);
+module.exports = NoteModel;

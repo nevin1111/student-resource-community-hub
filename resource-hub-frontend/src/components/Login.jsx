@@ -26,6 +26,8 @@ const Login = () => {
         axios.post('http://localhost:4000/login', formData)
             .then(res => {
                 if (res.data.status === 'success') {
+                    localStorage.setItem('userName', res.data.name);
+
                     alert('Login successful!');
                     navigate('/home');
                 } else {
