@@ -73,7 +73,7 @@ const NoteList = () => {
 
                                     <div className="d-flex justify-content-between mt-3">
                                         <a
-                                            href={`http://localhost:4000/${note.fileUrl}`}
+                                            href={`http://localhost:4000${note.fileUrl}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="btn btn-sm btn-outline-primary"
