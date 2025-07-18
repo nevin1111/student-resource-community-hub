@@ -63,7 +63,6 @@ const SemesterFolders = () => {
           >
             <div className="card-body text-center">
               <h5 className="card-title">{sem}</h5>
-              <p className="card-text">View subjects and upload/view notes.</p>
             </div>
           </div>
         ))}
