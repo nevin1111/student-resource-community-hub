@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+* {
+  caret-color: transparent;
+}
+
+input, textarea, [contenteditable="true"] {
+  caret-color: auto;
+}

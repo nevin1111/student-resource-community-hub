@@ -10,7 +10,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-success shadow-sm sticky-top">
       <div className="container-fluid">
         <span className="navbar-brand fw-bold" style={{ cursor: 'pointer' }} onClick={() => navigate('/home')}>
           📘 Study Resource Hub
