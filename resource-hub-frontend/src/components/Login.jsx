@@ -9,6 +9,8 @@ const Login = () => {
         password: ''
     });
 
+    const [showPassword, setShowPassword] = useState(false);
+    
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -65,7 +67,7 @@ const Login = () => {
                             <i className="bi bi-lock-fill"></i>
                         </span>
                         <input
-                            type="password"
+                            type={showPassword ? 'text' : 'password'}
                             className="form-control"
                             name="password"
                             value={formData.password}
@@ -73,6 +75,14 @@ const Login = () => {
                             placeholder="Password"
                             required
                         />
+                        <button
+                            type="button"
+                            className="btn border"
+                            onClick={() => setShowPassword(!showPassword)}
+                            tabIndex={-1}
+                        >
+                            <i className={`bi ${showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`}></i>
+                        </button>
                     </div>
 
                     <button type="submit" className="btn btn-success w-100 mb-2">
