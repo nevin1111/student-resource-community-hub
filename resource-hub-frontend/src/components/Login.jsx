@@ -10,7 +10,7 @@ const Login = () => {
     });
 
     const [showPassword, setShowPassword] = useState(false);
-    
+
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -29,8 +29,6 @@ const Login = () => {
             .then(res => {
                 if (res.data.status === 'success') {
                     localStorage.setItem('userName', res.data.name);
-
-                    alert('Login successful!');
                     navigate('/home');
                 } else {
                     alert('Invalid email or password');
