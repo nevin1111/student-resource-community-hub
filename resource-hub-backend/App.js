@@ -34,28 +34,34 @@ mongoose.connect('mongodb+srv://nevin1111:internalmarkmongo@cluster0.ltgqnuy.mon
 
 // Register
 app.post('/register', (req, res) => {
-    console.log(req.body)
+  const { name, email, password, admissionNumber, joinYear, endYear } = req.body;
 
-    UserModel.findOne({ email: req.body.email })
-        .then(existingUser => {
-            if (existingUser) {
-                res.json({
-                    status: 'fail',
-                    message: 'Email already registered'
-                })
-            } else {
-                let user = new UserModel(req.body)
-                user.save()
+  if (!name || !email || !password || !admissionNumber || !joinYear || !endYear) {
+    return res.json({ status: 'fail', message: 'All fields are required' });
+  }
 
-                res.json({
-                    status: 'success',
-                    message: 'User registered successfully'
-                })
-            }
-        }).catch(() => {
-            res.json({ status: 'error', message: 'Error during registration' })
-        })
-})
+  UserModel.findOne({ email })
+    .then(existingUser => {
+      if (existingUser) {
+        res.json({
+          status: 'fail',
+          message: 'Email already registered'
+        });
+      } else {
+        const user = new UserModel({ name, email, password, admissionNumber, joinYear, endYear });
+        user.save()
+          .then(() => {
+            res.json({ status: 'success', message: 'User registered successfully' });
+          })
+          .catch(() => {
+            res.json({ status: 'error', message: 'Error during registration' });
+          });
+      }
+    }).catch(() => {
+      res.json({ status: 'error', message: 'Error during registration' });
+    });
+});
+
 
 
 // Login
